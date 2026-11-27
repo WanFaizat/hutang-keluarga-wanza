@@ -200,9 +200,9 @@ const SHEET='1BpNpQsZnTRqe38DwxMF_phQl43KG5AjIc2J0Fk6joG4',RESIT='1eCaCwVMPQOmFS
 const DOCS_URL='https://drive.google.com/drive/folders/'+DOCS;
 const SHEET_URL='https://docs.google.com/spreadsheets/d/'+SHEET+'/edit',FOLDER_URL='https://drive.google.com/drive/folders/1m-TKGkoY5ejBSOwb8K177JEIJ9xJgpw2';
 const LS='wfHutangV2';
-let S={items:[],fam:{},docs:[],cph:{},lang:'bm',mode:'pintar',who:'',sub:'hutang',flt:'aktif',q:'',budget:0,steps:{},photos:{},at:0};
+let S={items:[],fam:{},docs:[],cph:{},lang:'bm',mode:'bola',who:'',sub:'hutang',flt:'aktif',q:'',budget:0,steps:{},photos:{},at:0};
 try{const c=localStorage.getItem(LS);if(c)S=Object.assign(S,JSON.parse(c));else{const o=JSON.parse(localStorage.getItem('wfHutangV1')||'null');if(o&&o.items)S.items=o.items}}catch(e){}
-['fam','steps','photos','cph'].forEach(k=>{if(!S[k])S[k]={}});if(!Array.isArray(S.docs))S.docs=[];
+['fam','steps','photos','cph'].forEach(k=>{if(!S[k])S[k]={}});if(S.mode!=='pintar')S.mode='bola';if(!Array.isArray(S.docs))S.docs=[];
 const MEM=[
  {n:'Wan Mohd Sanusi bin Wan Sulaiman',s:'Sanusi',r:['Ayah','Father'],c:'#2b2d42'},
  {n:'Mahaiza binti Ahmad',s:'Mahaiza',r:['Mak','Mother'],c:'#ff5c7f'},
@@ -220,8 +220,8 @@ sJanji:'Janji bayar',sPem:'Pemiutang',sBank:'Akaun bank',sWaris:'Waris pemiutang
 cT:'Tunai',cB:'Pindahan bank',cD:'DuitNow / QR',cL:'Lain-lain',tel:'Telefon',alamat:'Alamat / kampung',tahun:'Tahun berhutang',jenisH:'Jenis hutang',jDuit:'Duit',jBarang:'Barang',
 bankN:'Nama bank',noAk:'No. akaun',pemAk:'Pemegang akaun',wN:'Nama waris',wR:'Hubungan',wT:'Tel. waris',lain2:'Butiran lain',pic:'Tindakan / PIC',kemas:'Kemaskini',nota:'Nota',
 salinAk:'Salin no. akaun',akDisalin:'No. akaun disalin',salinR:'Salin ringkasan',disalin:'Disalin',
-mBola:'Kecil dulu',mPintar:'Ikut kategori',mFaedah:'Faedah tinggi',priSub:'Langsaikan hutang paling kecil dulu, kemudian gulung bayarannya ke hutang seterusnya.',
-dBola:'Baki paling kecil dulu. Cepat nampak hasil, semangat naik.',dPintar:'Ikut susunan A, D, C, B. Dalam setiap kategori, yang hampir tarikh dulu, kemudian baki paling kecil. Kategori C ikut faedah tertinggi.',dFaedah:'Faedah paling tinggi dulu. Paling jimat untuk hutang bank.',
+mBola:'Kecil ke besar',mPintar:'Ikut kategori',mFaedah:'Faedah tinggi',priSub:'Langsaikan hutang paling kecil dulu, kemudian gulung bayarannya ke hutang seterusnya.',
+dBola:'Susun dari baki paling kecil ke paling besar. Cepat nampak hasil, semangat naik.',dPintar:'Ikut susunan kategori A, D, C, B. Dalam setiap kategori, kecil ke besar.',dFaedah:'Faedah paling tinggi dulu. Paling jimat untuk hutang bank.',
 rancang:'Pelan bebas hutang',bajet:'Berapa boleh bayar sebulan? (RM)',bajetN:'Semua bajet masuk ke hutang paling kecil. Bila selesai, bayarannya digulung ke hutang seterusnya.',bebas:'Bebas hutang',
 langkah:'7 langkah bebas hutang',langkahS:'Tanda bila dah buat.',prinsip:'4 prinsip asas',
 famSub:'Isi IC setiap ahli. Umur dikira sendiri dalam Google Sheet.',ic:'No. IC',gambar:'Gambar',gTarikh:'Target bebas hutang',gNota:'Matlamat / impian',simpan:'Simpan',batal:'Batal',padam:'Padam',padam2:'Tekan lagi untuk padam',
@@ -248,8 +248,8 @@ sJanji:'Payment promise',sPem:'Creditor',sBank:'Bank account',sWaris:'Creditor\'
 cT:'Cash',cB:'Bank transfer',cD:'DuitNow / QR',cL:'Other',tel:'Phone',alamat:'Address / village',tahun:'Year borrowed',jenisH:'Debt type',jDuit:'Money',jBarang:'Goods',
 bankN:'Bank name',noAk:'Account no.',pemAk:'Account holder',wN:'Heir name',wR:'Relationship',wT:'Heir phone',lain2:'Other details',pic:'Action / PIC',kemas:'Updated',nota:'Note',
 salinAk:'Copy account no.',akDisalin:'Account no. copied',salinR:'Copy summary',disalin:'Copied',
-mBola:'Smallest first',mPintar:'By category',mFaedah:'High interest',priSub:'Clear the smallest debt first, then roll its payment into the next one.',
-dBola:'Smallest balance first. Quick wins keep everyone going.',dPintar:'In order A, D, C, B. Within each category, nearly due first, then the smallest balance. Category C goes by highest interest.',dFaedah:'Highest interest first. Saves the most on bank debts.',
+mBola:'Small to large',mPintar:'By category',mFaedah:'High interest',priSub:'Clear the smallest debt first, then roll its payment into the next one.',
+dBola:'Smallest balance first. Quick wins keep everyone going.',dPintar:'In category order A, D, C, B. Within each category, small to large.',dFaedah:'Highest interest first. Saves the most on bank debts.',
 rancang:'Debt free plan',bajet:'How much can you pay a month? (RM)',bajetN:'The whole budget goes to the smallest debt. When it is cleared, its payment rolls to the next.',bebas:'Debt free',
 langkah:'7 steps to debt freedom',langkahS:'Tick when done.',prinsip:'4 basic principles',
 famSub:'Add each member\'s IC. Age is worked out in the Google Sheet.',ic:'IC no.',gambar:'Photo',gTarikh:'Debt free target',gNota:'Goal / dream',simpan:'Save',batal:'Cancel',padam:'Delete',padam2:'Tap again to delete',
@@ -337,7 +337,7 @@ function write(fn){setSync('busy');qw=qw.then(fn).then(()=>pull()).catch(e=>{set
 async function connect(){try{if(!window.claude){setSync('off');return}
   const [m,d]=await Promise.all([claude.use('mcp'),claude.use('db')]);mcp=m;db=d;
   if(db&&isOwnerGuess()){try{fref=db.doc('hutang/foto');const fs=await fref.get();const fp=fs&&(typeof fs.data==='function'?fs.data():(fs.data||fs));if(fp&&fp.cph){S.cph=fp.cph;cache()}}catch(e){}}
-  if(db){ref=db.doc('hutang/state');try{const s=await ref.get();const p=s&&(typeof s.data==='function'?s.data():(s.data||s));if(p&&p.u){['big','theme','lang','mode','budget','steps','photos'].forEach(k=>{if(p[k]!==undefined)S[k]=p[k]});cache();render()}}catch(e){}}
+  if(db){ref=db.doc('hutang/state');try{const s=await ref.get();const p=s&&(typeof s.data==='function'?s.data():(s.data||s));if(p&&p.u){['big','theme','lang','mode','budget','steps','photos'].forEach(k=>{if(p[k]!==undefined)S[k]=p[k]});if(S.mode!=='pintar')S.mode='bola';cache();render()}}catch(e){}}
   try{const u=await claude.use('user');const o=u?!!(await u.isOwner()):false;if(o!==isOwner){isOwner=o;S.owner=o;cache();render()}}catch(e){}
   if(!isOwner){render();await pullPublic();setInterval(()=>{if(document.visibilityState==='visible')pullPublic()},60000);return}
   if(!mcp){setSync('off');render();return}await pull();
@@ -353,7 +353,7 @@ const kls=i=>i.cat==='allah'?'E':i.cat==='kerajaan'?'D':i.cat==='bank'?'C':num(i
 const isA=i=>i.type==='hutang'&&kls(i)==='A';
 const KAT={A:{c:'R',bm:['Persendirian bawah RM10,000','Selesai segera. Kecil dulu.'],en:['Personal, under RM10,000','Settle now. Smallest first.']},
  D:{c:'Y',bm:['Kerajaan & utiliti','Segera. Elak denda, saman atau sekatan.'],en:['Government & utilities','Urgent. Avoid penalties or travel bans.']},
- C:{c:'B',bm:['Bank & institusi kewangan','Bayar ansuran ikut jadual, jangan tertunggak. Lebihan ke faedah tertinggi.'],en:['Banks & lenders','Pay instalments on time. Extra goes to the highest interest.']},
+ C:{c:'B',bm:['Bank & institusi kewangan','Bayar ansuran ikut jadual, jangan tertunggak.'],en:['Banks & lenders','Pay instalments on time.']},
  B:{c:'P',bm:['Persendirian RM10,000 ke atas','Runding dan setuju pelan ansuran bertulis.'],en:['Personal, RM10,000 and above','Agree a written instalment plan.']},
  E:{c:'G',bm:['Hutang dengan Allah','Qada puasa, zakat, fidyah, nazar. Tunaikan seiring.'],en:['Debts to Allah','Missed fasts, zakat, fidyah, vows. Settle alongside.']}};
 const KORD=['A','D','C','B','E'];
@@ -376,8 +376,7 @@ const hideIC=v=>{const d=String(v||'').replace(/\D/g,'');return d.length<12?(v?'
 const keyDate=i=>i.pdate||i.due;
 function rank(list){const a=list.filter(i=>num(i.baki)>0),m=S.mode;
   return a.sort((x,y)=>{if(m==='bola')return num(x.baki)-num(y.baki);if(m==='faedah')return num(y.rate)-num(x.rate)||num(x.baki)-num(y.baki);
-    if(risky(x)!==risky(y))return risky(y)-risky(x);const kx=KORD.indexOf(kls(x)),ky=KORD.indexOf(kls(y));if(kx!==ky)return kx-ky;if(kls(x)==='C')return num(y.rate)-num(x.rate)||num(x.baki)-num(y.baki);
-    const ux=days(keyDate(x)),uy=days(keyDate(y)),px=ux!==null&&ux<=30?ux:999,py=uy!==null&&uy<=30?uy:999;return px-py||num(x.baki)-num(y.baki)})}
+    if(risky(x)!==risky(y))return risky(y)-risky(x);const kx=KORD.indexOf(kls(x)),ky=KORD.indexOf(kls(y));if(kx!==ky)return kx-ky;    return num(x.baki)-num(y.baki)})}
 function plan(list,budget){if(budget<=0)return null;const d=list.filter(i=>num(i.baki)>0).map(i=>({i,b:num(i.baki)})).sort((a,b)=>a.b-b.b);
   const out=[];let m=0;while(d.some(x=>x.b>0)&&m<600){m++;let left=budget;for(const x of d){if(x.b<=0)continue;const p=Math.min(left,x.b);x.b-=p;left-=p;if(x.b<=0.005){x.b=0;out.push({i:x.i,m})}if(left<=0)break}}return {out,m}}
 function status(i){if(num(i.baki)<=0)return (i.pays||[]).some(p=>p.h)?['g',t('stD')]:['g',t('selesai')];return (i.pays||[]).length?['y',t('stS')]:['',t('stB')]}
@@ -537,7 +536,7 @@ function planHTML(pl){if(!pl)return '';return `<div class="tl" style="margin-top
   <div class="hrow" style="margin-top:12px;border-top:1px solid var(--line);padding-top:10px"><b>${t('bebas')}</b><b class="pos" style="white-space:nowrap">${monthName(pl.m)}</b></div>`}
 function priV(){const list=H(),r=rank(list),m=S.mode;
   return `${mems()}${memberHead()}<h2 style="margin-top:12px">${t('dulu')}</h2><p class="sub">${t('priSub')}</p>
-  <div class="seg">${[['pintar','mPintar'],['bola','mBola'],['faedah','mFaedah']].map(([k,l])=>`<button data-mode="${k}" class="${m===k?'on':''}">${t(l)}</button>`).join('')}</div>
+  <div class="seg two">${[['bola','mBola'],['pintar','mPintar']].map(([k,l])=>`<button data-mode="${k}" class="${m===k?'on':''}">${t(l)}</button>`).join('')}</div>
   <p class="note" style="margin:10px 2px 12px">${t(m==='bola'?'dBola':m==='faedah'?'dFaedah':'dPintar')}</p>${m==='pintar'?katBox(list):''}<div style="height:10px"></div>
   <div class="list">${r.slice(0,8).map((i,n)=>item(i,n+1)).join('')||`<div class="card note">${t('tiadaH')}</div>`}</div>
   <h2>${t('rancang')}</h2><div class="card in"><label for="budget" style="margin-top:0">${t('bajet')}</label><input id="budget" inputmode="decimal" value="${num(S.budget)||''}" placeholder="500">
