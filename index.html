@@ -218,6 +218,10 @@ body.fam.mem a[data-v=keluarga]{display:grid!important}
 html,body{overflow-x:hidden;max-width:100%}#app{overflow-x:clip}.card,.it,.list>*{min-width:0;max-width:100%}
 @media(max-width:560px){.ig{grid-template-columns:minmax(0,1fr)}#app [style*="repeat(2"]{grid-template-columns:minmax(0,1fr)!important}.dn{grid-template-columns:96px minmax(0,1fr)}}
 .fm>summary{list-style:none;cursor:pointer}.fm>summary::-webkit-details-marker{display:none}.fm>summary::after{content:'';width:10px;height:10px;border-right:2.5px solid var(--mute);border-bottom:2.5px solid var(--mute);transform:rotate(45deg);margin-left:4px;transition:transform .25s;flex:0 0 auto}.fm[open]>summary::after{transform:rotate(-135deg)}.fm[open]>summary{margin-bottom:10px}
+.mgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.mg{background:var(--panel);border:1px solid light-dark(#edf0f7,#262a45);border-radius:18px;padding:12px 6px;display:grid;justify-items:center;gap:3px;font:inherit;color:var(--ink);cursor:pointer;box-shadow:0 6px 18px light-dark(rgba(28,40,90,.06),rgba(0,0,0,.25));transition:transform .15s;animation:pop .45s both}.mg:active{transform:scale(.95)}.mg b{font-size:14px;margin-top:4px}.mg span{font-size:13px;font-weight:800}.mg small{font-size:11px;color:var(--mute);min-height:14px}
+.mdh{display:flex;gap:14px;align-items:center;text-align:left}.mdh>div:last-child{flex:1}.mdh b{display:block;font-size:20px}.mdh span{color:var(--mute);font-size:13px}
+.mdbox{margin-top:14px;background:#24306b;color:#fff;border-radius:20px;padding:16px}.mdbox small,.mdbox span{color:rgba(255,255,255,.8);font-size:13px}.mdbox .big{color:#fff;font-size:30px}.mdbox .thin{background:rgba(255,255,255,.15)}.mdbox .thin i{background:#2fc483}
+.mdi{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px;font:inherit;color:var(--ink);cursor:pointer}.mdi .no{width:26px;height:26px;border-radius:50%;background:var(--Bs);color:var(--B);display:grid;place-items:center;font-weight:800;font-size:12px;flex:0 0 auto}.mdi .t{flex:1;min-width:0}.mdi .t b{display:block;font-size:14px;line-height:1.3}.mdi .t small{color:var(--mute);font-size:12px}.mdi>span:last-child{font-weight:800;font-size:14px;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -673,6 +677,12 @@ function katBox(list){const tot=sum(list.filter(i=>num(i.baki)>0),'baki')||1;
 /* ---------- views ---------- */
 const QUOTES=[['Bila ada duit sikit, bayar hutang dulu. Bila ada untung sikit, bayar hutang dulu.','Fail Urusan Keluarga WANZA'],['Motivasi terbaik adalah kematian.',''],['Sesungguhnya sebaik-baik kamu ialah yang paling baik membayar hutang.','Riwayat al-Bukhari dan Muslim'],['Langsaikan hutang paling kecil dulu. Satu selesai, semangat naik.',''],['Hidup di bawah kemampuan. Belanja ikut keperluan, bukan kehendak.',''],['Hutang wajib ditulis. Yang ditulis, boleh dilangsaikan.','Surah al-Baqarah, ayat 282']];
 let qi=0;
+function memDash(n){const m=MEM.find(x=>x.n===n),st=stats(n),a=age(n),list=rank(H(n)),paid=st.asal-st.baki;
+  open(`<div class="md"><div class="mdh">${avatar(m,st.pct,1)}<div><b>${esc(nick(m))}</b><span>${a!==null?t('umur',{n:a}):''}</span></div></div>
+  <div class="mdbox"><small>${L()?'Debt balance':'Baki hutang'}</small><div class="big">${rm(st.baki)}</div><div class="thin" style="margin:10px 0 6px"><i style="width:${(st.pct*100).toFixed(1)}%"></i></div><span>${(st.pct*100).toFixed(1)}% ${t('dibayar')} · ${L()?'Paid':'Dah bayar'} ${rm0(paid)}</span></div>
+  <div class="hrow" style="margin-top:14px"><h2 style="font-size:17px">${L()?'Debts':'Senarai hutang'} (${list.filter(i=>num(i.baki)>0).length})</h2></div>
+  <div class="list">${list.map((i,k)=>`<button class="mdi" data-mjump="${esc(i.id)}"><span class="no">${k+1}</span><span class="t"><b>${esc(i.name)}</b><small>${(L()?'Cat. ':'Kat. ')+kls(i)}${(i.asof||i.k)?' · '+(L()?'as at ':'setakat ')+sdt(i.asof||i.k):''}</small></span><span class="${num(i.baki)>0?'neg':'pos'}">${num(i.baki)>0?rm(i.baki):(L()?'Settled':'Selesai')}</span></button>`).join('')||`<p class="note">${t('tiadaH')}</p>`}</div></div>
+  <div class="acts"><button class="btn gh" data-close>${L()?'Close':'Tutup'}</button><button class="btn" data-go="${esc(n)}">${L()?'Open full list':'Buka senarai penuh'}</button></div>`)}
 function dash(){const st=stats(''),c=2*Math.PI*40,pays=[];S.items.forEach(i=>(i.pays||[]).forEach(p=>pays.push({i,p})));pays.sort((a,b)=>String(b.p.d).localeCompare(String(a.p.d)));
   const big=H('').filter(i=>num(i.baki)>0).sort((a,b)=>num(b.baki)-num(a.baki)).slice(0,6),mx=big.length?num(big[0].baki):1,pl=plan(H(''),num(S.budget));
   const [qa,qb]=QUOTES[qi%QUOTES.length];
@@ -681,6 +691,9 @@ function dash(){const st=stats(''),c=2*Math.PI*40,pays=[];S.items.forEach(i=>(i.
   <div class="lgd"><span><i style="background:var(--G)"></i>${L()?'Paid':'Dah dibayar'} ${rm0(st.asal-st.baki)}</span><span><i style="background:var(--R)"></i>${L()?'Still owed':'Belum dibayar'} ${rm0(st.baki)}</span></div>
   <div class="hstats"><div><small>${t('asal')}</small><b data-c="${st.asal}">${rm0(st.asal)}</b></div><div><small>${t('dahB')}</small><b data-c="${st.asal-st.baki}">${rm0(st.asal-st.baki)}</b></div><div><small>${t('tPiu')}</small><b data-c="${sum(P(''),'baki')}">${rm0(sum(P(''),'baki'))}</b></div></div>
   <div class="quote" id="quote"><p>${esc(qa)}</p><small>${esc(qb)}</small></div></section>
+  <div class="hrow"><h2>${t('keluarga')}</h2><span class="sl">${L()?'Tap a name':'Tekan nama'}</span></div>
+  <div class="mgrid">${MEM.map((m,k)=>{const s=stats(m.n),n=s.h.filter(i=>num(i.baki)>0).length;return `<button class="mg in" style="animation-delay:${k*40}ms" data-mdash="${esc(m.n)}">${avatar(m,s.pct)}<b>${esc(nick(m))}</b><span class="${s.baki>0?'neg':'pos'}">${s.baki>0?rm0(s.baki):t('tiadaH')}</span><small>${n?n+(L()?' debts':' hutang'):''}</small></button>`}).join('')}</div>
+
 
 
   ${online||!mcp?'':''}${!mcp&&S.at?`<div class="banner">${t('sOffN')}</div>`:''}
@@ -689,8 +702,7 @@ function dash(){const st=stats(''),c=2*Math.PI*40,pays=[];S.items.forEach(i=>(i.
   <button data-act="add"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg><span>${t('tambah')}</span></button>
   ${isOwner?`<a href="${SHEET_URL}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M4 9h16M4 15h16M10 3v18"/></svg><span>${t('sheet')}</span></a>
   <a href="${FOLDER_URL}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span>${t('resit')}</span></a>`:''}</div>
-  <div class="hrow"><h2>${t('keluarga')}</h2></div>
-  <div class="carousel">${MEM.map(m=>{const s=stats(m.n),a=age(m.n);return `<button class="mc in" data-go="${esc(m.n)}">${avatar(m,s.pct)}<b>${esc(nick(m))}</b><span>${a!==null?t('umur',{n:a}):''}</span><div class="owe ${s.baki>0?'neg':'pos'}">${s.baki>0?rm0(s.baki):t('tiadaH')}</div></button>`}).join('')}</div>
+
   <div class="hrow"><h2>${t('dulu')}</h2><a href="#keutamaan">${t('lihatSemua')}</a></div>
   <div class="list">${rank(H('')).slice(0,3).map((i,n)=>item(i,n+1)).join('')||`<div class="card note">${t('tiadaH')}</div>`}</div>
   ${(()=>{const up=upcoming(60).slice(0,4),eg=MEM.reduce((x,m)=>x+(emasOf(m.n).g||0),0);if(!up.length&&!eg)return '';
@@ -960,7 +972,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b||
   else if(d.cic){copy(String((S.fam[d.cic]||{}).ic||'').replace(/\D/g,''),t('icDisalin'))}
   else if(d.photo){photoFor=d.photo;pin.click()}
   else if(d.doc)docForm(d.doc);
-  else if(d.lw){lgPick(d.lw)}   else if(d.pk!==undefined){lgKey(d.pk)}   else if(d.lback){lgWho='';lgPin='';lgStep='';lgMsg='';render()}   else if(d.lforgot){lgForgot()}   else if(d.aset!==undefined){asetForm(d.aset)}   else if(d.zakat){zakatOpen(d.zakat)}   else if(d.rpin){adminResetPin(d.rpin)}   else if(b.id==='bPin'){pinForm('',false)}   else if(b.id==='bOut'){logout()}   else if(d.dw){dokWho=d.dw;render()}   else if(d.fup){famUpload(d.fup,d.j)}   else if(d.alld){dokWho=d.alld;open(`<div class="dokm">${dokV()}</div><div class="acts"><button class="btn gh" data-close>${L()?'Close':'Tutup'}</button></div>`);anim(sheet)}
+  else if(d.mdash){memDash(d.mdash)}   else if(d.mjump){close();opened.add(d.mjump);S.who='';S.flt='aktif';S.q='';S.sub='hutang';location.hash='hutang';setTimeout(()=>{const el=document.querySelector(`[data-it="${CSS.escape(d.mjump)}"]`);if(el)el.scrollIntoView({behavior:'smooth',block:'center'})},150)}   else if(d.lw){lgPick(d.lw)}   else if(d.pk!==undefined){lgKey(d.pk)}   else if(d.lback){lgWho='';lgPin='';lgStep='';lgMsg='';render()}   else if(d.lforgot){lgForgot()}   else if(d.aset!==undefined){asetForm(d.aset)}   else if(d.zakat){zakatOpen(d.zakat)}   else if(d.rpin){adminResetPin(d.rpin)}   else if(b.id==='bPin'){pinForm('',false)}   else if(b.id==='bOut'){logout()}   else if(d.dw){dokWho=d.dw;render()}   else if(d.fup){famUpload(d.fup,d.j)}   else if(d.alld){dokWho=d.alld;open(`<div class="dokm">${dokV()}</div><div class="acts"><button class="btn gh" data-close>${L()?'Close':'Tutup'}</button></div>`);anim(sheet)}
   else if(d.up){famUpload(dokWho||MEM[0].n,d.up)}
   else if(b.hasAttribute('data-close'))close()});
 ov.addEventListener('click',e=>{if(e.target===ov)close()});
