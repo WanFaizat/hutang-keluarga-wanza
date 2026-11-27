@@ -197,7 +197,7 @@ function callTool(u, server, tool, input) {
 function readFor(u, range, tab) {
   var sh = SS().getSheetByName(tab);
   if (!sh) return [];
-  var v = sh.getRange(range.split('!')[1] ? range : tab + '!A1:Z').getDisplayValues();
+  var v = sh.getRange(range.split('!')[1] || 'A1:Z').getDisplayValues();
   while (v.length && v[v.length - 1].join('') === '') v.pop();
   if (u.role === 'admin') return v;
   var me = u.who.toLowerCase();

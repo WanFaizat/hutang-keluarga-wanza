@@ -360,7 +360,7 @@ async function connect(){try{if(!window.claude){if(!API){setSync('off');return}i
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')pull()})}catch(e){setSync('off')}}
 
 /* ---------- versi telefon (GitHub Pages): sambungan Apps Script & PIN ---------- */
-const API_URL='__API_URL__';
+const API_URL='https://script.google.com/macros/s/AKfycbzbshzm2wv0gfTuhDUgtLkF7pf1W8UPUKjf-WonRtHmOZhdx5ojOwRYmJ_Q25OdL6Y/exec';
 const API=!window.claude&&/^https:\/\/script\.google\.com\//.test(API_URL);
 let tok='';try{tok=localStorage.getItem('wfTok')||''}catch(e){}
 let lgWho='';
