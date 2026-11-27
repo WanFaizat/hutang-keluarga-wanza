@@ -224,6 +224,7 @@ html,body{overflow-x:hidden;max-width:100%}#app{overflow-x:clip}.card,.it,.list>
 .mdi{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px;font:inherit;color:var(--ink);cursor:pointer}.mdi .no{width:26px;height:26px;border-radius:50%;background:var(--Bs);color:var(--B);display:grid;place-items:center;font-weight:800;font-size:12px;flex:0 0 auto}.mdi .t{flex:1;min-width:0}.mdi .t b{display:block;font-size:14px;line-height:1.3}.mdi .t small{color:var(--mute);font-size:12px}.mdi>span:last-child{font-weight:800;font-size:14px;white-space:nowrap}
 #fab{width:54px!important;height:54px!important;border-radius:18px!important;bottom:calc(96px + env(safe-area-inset-bottom))!important}
 .mdp{margin:-4px 0 8px auto;display:block}.miss>summary{list-style:none;display:flex;align-items:center;gap:10px;cursor:pointer}.miss>summary::-webkit-details-marker{display:none}.miss>summary b{flex:1;font-size:15px}.mi1{min-width:26px;height:26px;border-radius:13px;background:var(--Ys);color:var(--gold);display:grid;place-items:center;font-weight:800;font-size:13px;padding:0 6px}.miss[open] svg{transform:rotate(180deg)}
+.lgt{text-align:center;font-size:13px;color:var(--mute);margin:-2px 0 4px}
 </style>
 </head>
 <body>
@@ -410,7 +411,7 @@ function loginV(){const m=MEM.find(x=>x.n===lgWho);
   return `<div class="lgn in"><div class="lgh"><img src="icon-192.png" alt="" width="64" height="64"><div><b>Keluarga WANZA</b><span>${L()?'Private family records':'Urusan keluarga, persendirian & sulit'}</span></div></div>
   ${!m?`<p class="lgq">${title}</p><div class="lgrid">${MEM.map((x,k)=>`<button class="lw" style="animation-delay:${k*50}ms" data-lw="${esc(x.n)}">${avatar(x,0)}<b>${esc(nick(x))}</b></button>`).join('')}</div>`
   :`<div class="lgme">${avatar(m,0)}<b>${esc(nick(m))}</b><button class="lgx" data-lback="1">${L()?'Change':'Tukar'}</button></div>
-  <p class="lgq">${title}</p><div class="dots${lgStep==='err'?' shake':''}">${[0,1,2,3,4,5].map(k=>`<i class="${k<lgPin.length?'on':''}"></i>`).join('')}</div><p class="lgm" id="lmsg">${lgMsg}</p>
+  <p class="lgq">${title}</p><div class="dots${lgStep==='err'?' shake':''}">${[0,1,2,3,4,5].map(k=>`<i class="${k<lgPin.length?'on':''}"></i>`).join('')}</div><p class="lgm" id="lmsg">${lgMsg}</p>${lgStep==='pin'&&!lgMsg?`<p class="lgt">${L()?'First time? Use the first 6 digits of your IC.':'Kali pertama? Guna 6 digit depan IC anda.'}</p>`:''}
   <div class="pad">${[1,2,3,4,5,6,7,8,9,'',0,'⌫'].map(k=>k===''?'<span></span>':`<button data-pk="${k}" aria-label="${k==='⌫'?'Padam':k}">${k==='⌫'?'<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 5H9l-6 7 6 7h12z"/><path d="M17 9l-6 6M11 9l6 6"/></svg>':k}</button>`).join('')}</div>
   ${lgHas?`<button class="lgf" data-lforgot="1">${L()?'Forgot PIN?':'Lupa PIN?'}</button>`:''}`}</div>`}
 let lgMsg='';
