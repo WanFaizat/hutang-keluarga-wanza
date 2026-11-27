@@ -266,3 +266,37 @@ function appendRows(tab, values) {
   for (var i = 0; i < col.length; i++) if (col[i][0] !== '') last = i + 1;
   writeRange(tab + '!A' + (last + 1), values);
 }
+
+/* ---------- peringatan emel harian ---------- */
+function installTrigger() {
+  ScriptApp.getProjectTriggers().forEach(function (t) { if (t.getHandlerFunction() === 'dailyReminder') ScriptApp.deleteTrigger(t); });
+  ScriptApp.newTrigger('dailyReminder').timeBased().everyDays(1).atHour(8).inTimezone('Asia/Kuala_Lumpur').create();
+  Logger.log('Peringatan harian dipasang (8 pagi).');
+}
+function dailyReminder() {
+  var tz = 'Asia/Kuala_Lumpur', today = new Date(Utilities.formatDate(new Date(), tz, 'yyyy-MM-dd') + 'T00:00:00');
+  var monday = today.getDay() === 1, items = [];
+  var dd = function (s) { s = String(s || '').replace(/^'/, '').slice(0, 10); if (!/^\d{4}-\d{2}-\d{2}$/.test(s)) return null; return Math.round((new Date(s + 'T00:00:00') - today) / 864e5); };
+  var want = function (n) { return n !== null && (n === 7 || n === 1 || n === 0 || (n < 0 && monday)); };
+  var lab = function (n) { return n < 0 ? 'LEWAT ' + (-n) + ' hari' : n === 0 ? 'HARI INI' : n + ' hari lagi'; };
+  var ss = SS(), a = ss.getSheetByName('Aset');
+  if (a && a.getLastRow() > 1) a.getRange(2, 1, a.getLastRow() - 1, 13).getDisplayValues().forEach(function (r) {
+    var n1 = dd(r[5]), n2 = dd(r[6]);
+    if (want(n1)) items.push([lab(n1), r[3] + ' (' + r[2] + ')', r[1] === 'Lesen memandu' ? 'Lesen tamat' : r[1] === 'Kenderaan' ? 'Road tax & insurans tamat' : 'Perlu diperbaharui', r[5]]);
+    if (want(n2)) items.push([lab(n2), r[3] + ' (' + r[2] + ')', 'Servis kenderaan', r[6]]);
+    if (r[7] && r[8] && Number(String(r[7]).replace(/,/g, '')) - Number(String(r[8]).replace(/,/g, '')) <= 500 && monday) items.push(['KM', r[3] + ' (' + r[2] + ')', 'Servis ikut kilometer hampir tiba', r[7] + ' km']);
+  });
+  var h = ss.getSheetByName('Hutang');
+  if (h && h.getLastRow() > 1) h.getRange(2, 1, h.getLastRow() - 1, 14).getDisplayValues().forEach(function (r) {
+    if (!r[0] || Number(String(r[6]).replace(/,/g, '')) <= 0) return;
+    var n1 = dd(r[11]), n2 = dd(r[13]);
+    if (want(n1)) items.push([lab(n1), r[4] + ' (' + r[1] + ')', 'Janji bayar RM' + r[6], r[11]]);
+    if (want(n2)) items.push([lab(n2), r[4] + ' (' + r[1] + ')', 'Tarikh akhir hutang', r[13]]);
+  });
+  if (!items.length) return;
+  var url = 'https://wanfaizat.github.io/hutang-keluarga-wanza/';
+  var html = '<div style="font-family:Arial,sans-serif;color:#23253a"><h2 style="color:#24306b;margin:0 0 6px">Peringatan Keluarga WANZA</h2><p>' + items.length + ' perkara perlu perhatian:</p><table cellpadding="8" style="border-collapse:collapse;font-size:14px">' +
+    items.map(function (x, i) { return '<tr style="background:' + (i % 2 ? '#fff' : '#f3f5fb') + '"><td><b style="color:' + (/LEWAT|HARI INI/.test(x[0]) ? '#e5484d' : '#c88400') + '">' + x[0] + '</b></td><td><b>' + x[1] + '</b><br>' + x[2] + '</td><td>' + x[3] + '</td></tr>'; }).join('') +
+    '</table><p><a href="' + url + '" style="background:#24306b;color:#fff;padding:10px 16px;border-radius:10px;text-decoration:none;display:inline-block">Buka app</a></p><p style="font-size:12px;color:#777">Dihantar automatik setiap pagi bila ada tarikh 7 hari lagi, 1 hari lagi, hari ini, atau setiap Isnin jika sudah lewat.</p></div>';
+  MailApp.sendEmail({ to: Session.getEffectiveUser().getEmail(), subject: 'Peringatan Keluarga WANZA: ' + items.length + ' perkara', htmlBody: html });
+}
