@@ -27,7 +27,7 @@ function setup() {
     ak = ss.insertSheet('Akses');
     ak.appendRow(['Ahli', 'Peranan', 'PIN sementara', 'PIN hash', 'Emel untuk lupa PIN', 'Kemaskini']);
     CONFIG.MEMBERS.forEach(function (m) {
-      ak.appendRow([m, m === CONFIG.ADMIN ? 'Admin' : 'Ahli', "'" + randPin(), '', '', new Date()]);
+      ak.appendRow([m, m === CONFIG.ADMIN ? 'Admin' : 'Ahli', '', '', '', new Date()]);
     });
     ak.setFrozenRows(1);
     ak.getRange('A1:F1').setFontWeight('bold').setBackground('#2b2d42').setFontColor('#ffffff');
@@ -47,7 +47,7 @@ function setup() {
     e.setFrozenRows(1);
     e.getRange('A1:I1').setFontWeight('bold').setBackground('#f0b400').setFontColor('#2b2d42');
   }
-  Logger.log('Siap. PIN sementara setiap ahli ada dalam tab Akses.');
+  Logger.log('Siap. Setiap ahli cipta PIN sendiri kali pertama masuk.');
 }
 
 function randPin() { return String(Math.floor(100000 + Math.random() * 900000)); }
@@ -62,6 +62,8 @@ function doPost(e) {
     var b = JSON.parse(e.postData.contents || '{}');
     if (b.act === 'login') return out(login(b.who, String(b.pin || '')));
     if (b.act === 'forgot') return out(forgot(b.who));
+    if (b.act === 'status') return out(status(b.who));
+    if (b.act === 'create') return out(createPin(b.who, String(b.pin || '')));
     var u = verify(b.tok);
     if (!u) return out({ ok: false, err: 'auth' });
     if (b.act === 'setpin') return out(setPin(u, String(b.oldPin || ''), String(b.pin || '')));
@@ -103,6 +105,24 @@ function login(who, pin) {
   c.remove(k);
   var role = m.r[1] === 'Admin' ? 'admin' : 'ahli';
   return { ok: true, tok: sign(m.r[0], role), who: m.r[0], role: role, mustChange: !!(temp && temp === pin) };
+}
+function status(who) {
+  var m = findMember(who);
+  if (!m) return { ok: false, err: 'who' };
+  return { ok: true, hasPin: !!(m.r[3] || m.r[2].replace(/^'/, '')) };
+}
+function createPin(who, pin) {
+  if (!/^\d{6}$/.test(pin)) return { ok: false, err: 'format' };
+  var lock = LockService.getScriptLock(); lock.waitLock(10000);
+  try {
+    var m = findMember(who);
+    if (!m) return { ok: false, err: 'who' };
+    if (m.r[3] || m.r[2].replace(/^'/, '')) return { ok: false, err: 'exists' };
+    m.sh.getRange(m.row, 3, 1, 2).setValues([['', hash(m.r[0], pin)]]);
+    m.sh.getRange(m.row, 6).setValue(new Date());
+    var role = m.r[1] === 'Admin' ? 'admin' : 'ahli';
+    return { ok: true, tok: sign(m.r[0], role), who: m.r[0], role: role };
+  } finally { lock.releaseLock(); }
 }
 function setPin(u, oldPin, pin) {
   if (!/^\d{6}$/.test(pin)) return { ok: false, err: 'format' };
