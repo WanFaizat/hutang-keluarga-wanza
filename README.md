@@ -1,9 +1,9 @@
-# Hutang Keluarga WANZA
+# Urusan Keluarga WANZA
 
-App rekod hutang keluarga (Persendirian & Sulit).
+App keluarga: hutang, dokumen, aset dan tarikh penting, emas dan zakat. Boleh dipasang di skrin utama telefon.
 
-- `index.html`: app satu fail (BM/EN, tema terang/gelap, admin dan paparan keluarga).
-- Data disimpan dalam Google Sheet keluarga, gambar resit dan dokumen dalam Google Drive.
-- Sambungan Google Sheet dan Drive hanya berfungsi bila app dibuka sebagai artifact dalam Claude.
+- Kod sahaja di sini. Data keluarga kekal dalam Google Sheet peribadi.
+- Setiap ahli masuk dengan PIN sendiri. Lupa PIN: PIN sementara dihantar melalui emel.
+- `apps-script/Code.gs` ialah sambungan ke Google Sheet (Extensions > Apps Script).
 
 Direka & dibangunkan oleh FAIMS EMPIRE
